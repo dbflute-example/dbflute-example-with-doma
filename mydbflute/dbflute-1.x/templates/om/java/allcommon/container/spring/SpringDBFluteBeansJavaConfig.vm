@@ -1,0 +1,135 @@
+##
+## Copyright 2014-2014 the original author or authors.
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## you may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+##     http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+## either express or implied. See the License for the specific language
+## governing permissions and limitations under the License.
+##
+${database.allClassCopyright}package ${glPackageBaseCommon};
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Bean;
+import org.dbflute.bhv.BehaviorSelector;
+import org.dbflute.bhv.core.BehaviorCommandInvoker;
+import org.dbflute.bhv.core.InvokerAssistant;
+import org.dbflute.hook.CommonColumnAutoSetupper;
+import ${database.DBFluteInitializerClass};
+import ${glPackageExtendedBhv}.*;
+
+/**
+ * @author ${database.classAuthor}
+ */
+@Configuration
+public class ${glDBFluteBeansJavaConfig} {
+
+    // ===================================================================================
+    //                                                                           Attribute
+    //                                                                           =========
+    // *according to dependency order
+    // and all injections use 'Resource' annotation to keep the order
+    // probably 'Resource' is processed before 'Autowired'
+    // besides, 'Resource' finds by name (specified or field name) first
+    // but secondly finds by type (only once so not case with small performance)
+    @Resource
+    protected ApplicationContext _xcontainer;
+
+    // injections are on name basic here for multiple DB
+    @Resource(name="${database.DBFluteBeansDataSourceName}")
+    protected DataSource dataSource;
+
+    @Resource(name="${database.invokerAssistantComponentName}")
+    protected InvokerAssistant invokerAssistant;
+
+    @Resource(name="${database.behaviorCommandInvokerComponentName}")
+    protected BehaviorCommandInvoker behaviorCommandInvoker;
+
+    @Resource(name="${database.behaviorSelectorComponentName}")
+    protected BehaviorSelector behaviorSelector;
+
+    @Resource(name="${database.commonColumnAutoSetupperComponentName}")
+    protected CommonColumnAutoSetupper commonColumnAutoSetupper;
+
+    // ===================================================================================
+    //                                                                   Runtime Component
+    //                                                                   =================
+    @Bean(name="${database.DBFluteInitializerComponentName}")
+    public ${glDBFluteInitializer} createDBFluteInitializer() {
+        return new ${database.DBFluteInitializerClass}(dataSource);
+    }
+
+    @Bean(name="${database.invokerAssistantComponentName}")
+    public InvokerAssistant createImplementedInvokerAssistant() {
+        ${glImplementedInvokerAssistant} assistant = newImplementedInvokerAssistant();
+        assistant.setDataSource(dataSource);
+        return assistant;
+    }
+
+    protected ${glImplementedInvokerAssistant} newImplementedInvokerAssistant() {
+        return new ${database.implementedInvokerAssistantClass}();
+    }
+
+    @Bean(name="${database.behaviorCommandInvokerComponentName}")
+    public BehaviorCommandInvoker createBehaviorCommandInvoker() {
+        BehaviorCommandInvoker invoker = newBehaviorCommandInvoker();
+        invoker.setInvokerAssistant(invokerAssistant);
+        return invoker;
+    }
+
+    protected BehaviorCommandInvoker newBehaviorCommandInvoker() {
+        return new BehaviorCommandInvoker();
+    }
+
+    @Bean(name="${database.behaviorSelectorComponentName}")
+    public ${glImplementedBehaviorSelector} createImplementedBehaviorSelector() {
+        ${glImplementedBehaviorSelector} selector = newImplementedBehaviorSelector();
+        selector.setContainer(_xcontainer);
+        return selector;
+    }
+
+    protected ${glImplementedBehaviorSelector} newImplementedBehaviorSelector() {
+        return new ${glImplementedBehaviorSelector}();
+    }
+
+    @Bean(name="${database.commonColumnAutoSetupperComponentName}")
+    public ${glImplementedCommonColumnAutoSetupper} createImplementedCommonColumnAutoSetupper() {
+        return newImplementedCommonColumnAutoSetupper();
+    }
+
+    protected ${glImplementedCommonColumnAutoSetupper} newImplementedCommonColumnAutoSetupper() {
+        return new ${glImplementedCommonColumnAutoSetupper}();
+    }
+
+#set ($behaviorLoopIndex = 0)
+#foreach ($table in $database.behaviorTableList)
+#if ($behaviorLoopIndex == 0)
+    // ===================================================================================
+    //                                                                            Behavior
+    //                                                                            ========
+#else
+
+#end
+    @Bean(name="${table.behaviorComponentName}")
+    public ${table.extendedBehaviorClassName} create${table.extendedBehaviorClassName}() {
+        ${table.extendedBehaviorClassName} bhv = new${table.extendedBehaviorClassName}();
+        bhv.setBehaviorCommandInvoker(behaviorCommandInvoker); bhv.setBehaviorSelector(behaviorSelector);
+#if ($table.isWritable())
+        bhv.setCommonColumnAutoSetupper(commonColumnAutoSetupper);
+#end
+        return bhv;
+    }
+    protected ${table.extendedBehaviorClassName} new${table.extendedBehaviorClassName}() { return new ${table.extendedBehaviorClassName}(); }
+#set ($behaviorLoopIndex = $behaviorLoopIndex + 1)
+#end
+}
