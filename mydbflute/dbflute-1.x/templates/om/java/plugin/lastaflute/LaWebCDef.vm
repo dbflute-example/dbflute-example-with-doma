@@ -13,7 +13,7 @@
 ## either express or implied. See the License for the specific language
 ## governing permissions and limitations under the License.
 ##
-${database.allClassCopyright}package ${glPackageBaseCommon};
+${manager.allClassCopyright}package ${request.package};
 
 import java.util.*;
 
@@ -22,18 +22,22 @@ import org.dbflute.jdbc.ClassificationCodeType;
 import org.dbflute.jdbc.ClassificationMeta;
 import org.dbflute.jdbc.ClassificationUndefinedHandlingType;
 import org.dbflute.optional.OptionalThing;
+#if ($tableMap.hasRefCls)
+import ${tableMap.allcommonPackage}.*;
+#end
 
+#set ($glCDef = "${request.className}")
 /**
- * The definition of classification.
- * @author ${database.classAuthor}
+ * The definition of web classification.
+ * @author FreeGen
  */
 public interface ${glCDef} extends Classification {
 
     /** The empty array for no sisters. */
     String[] EMPTY_SISTERS = new String[]{};
 
-#foreach ($classificationName in $database.classificationNameList)
-#set ($classificationTop = $database.getClassificationTop($classificationName))
+#foreach ($classificationTop in $tableMap.classificationTopList)
+#set ($classificationName = $classificationTop.classificationName)
 #if ($classificationTop.hasTopComment())
     /**
      * ${classificationTop.topCommentForJavaDoc}
@@ -48,7 +52,7 @@ public interface ${glCDef} extends Classification {
 #if ($count != 0)
         ,
 #end
-        /** $database.buildClassificationApplicationCommentForJavaDoc($classificationElement) */
+        /** ${classificationElement.buildClassificationApplicationCommentForJavaDoc()} */
 #if ($classificationElement.isDeprecated())
         @Deprecated
 #end
@@ -62,10 +66,9 @@ public interface ${glCDef} extends Classification {
             for (${classificationName} value : values()) {
                 _codeClsMap.put(value.code().toLowerCase(), value);
                 for (String sister : value.sisterSet()) { _codeClsMap.put(sister.toLowerCase(), value); }
-                _nameClsMap.put(value.name().toLowerCase(), value);
             }
         }
-#if ($database.hasClassificationSubItemMap($classificationName))
+#if ($classificationTop.hasSubItem())
         private static final Map<String, Map<String, Object>> _subItemMapMap = new HashMap<String, Map<String, Object>>();
         static {
 #foreach ($classificationElement in $classificationTop.classificationElementList)
@@ -89,7 +92,7 @@ public interface ${glCDef} extends Classification {
         { _code = code; _alias = alias; _sisterSet = Collections.unmodifiableSet(new LinkedHashSet<String>(Arrays.asList(sisters))); }
         public String code() { return _code; } public String alias() { return _alias; }
         public Set<String> sisterSet() { return _sisterSet; }
-#if ($database.hasClassificationSubItemMap($classificationName))
+#if ($classificationTop.hasSubItem())
         public Map<String, Object> subItemMap() { return _subItemMapMap.get(code()); }
 #else
         public Map<String, Object> subItemMap() { return Collections.emptyMap(); }
@@ -163,6 +166,7 @@ public interface ${glCDef} extends Classification {
          * Get the classification by the code. (CaseInsensitive)
          * @param code The value of code, which is case-insensitive. (NullAllowed: if null, returns null)
          * @return The instance of the corresponding classification to the code. (NullAllowed: if not found, returns null)
+         * @deprecated use of()
          */
         public static ${classificationName} codeOf(Object code) {
             if (code == null) { return null; }
@@ -239,6 +243,29 @@ public interface ${glCDef} extends Classification {
 #end
             return new ArrayList<${classificationName}>(4);
         }
+#foreach ($refClsElement in $classificationTop.refClsElementList)
+
+        /**
+         * @param dbCls The DB classification to find. (NullAllowed: if null, returns empty) 
+         * @return The the app classification corresponding to the DB classification. (NotNull, EmptyAllowed: when null specified, not found)
+         */
+        public static OptionalThing<${classificationName}> fromDBCls(${refClsElement.classificationType} dbCls) {
+            String dbCode = dbCls != null ? dbCls.code() : null;
+            return OptionalThing.ofNullable(codeOf(dbCode), () -> {
+                throw new IllegalStateException("Cannot convert ${refClsElement.classificationType} to ${classificationName} by the DB code: " + dbCode);
+            });
+        }
+
+        /**
+         * @return The DB classification corresponding to the app classification. (NotNull, EmptyAllowed: when no-related to DB)
+         */
+        public OptionalThing<${refClsElement.classificationType}> toDBCls() {
+            String appCode = code();
+            return OptionalThing.ofNullable(${refClsElement.classificationType}.codeOf(appCode), () -> {
+                throw new IllegalStateException("Cannot convert ${classificationName} to ${refClsElement.classificationName} by the app code: " + appCode);
+            });
+        }
+#end
 
         @Override public String toString() { return code(); }
     }
@@ -246,8 +273,8 @@ public interface ${glCDef} extends Classification {
 #end
     public enum DefMeta implements ClassificationMeta {
 #set ($count = 0)
-#foreach ($classificationName in $database.classificationNameList)
-#set ($classificationTop = $database.getClassificationTop($classificationName))
+#foreach ($classificationTop in $tableMap.classificationTopList)
+#set ($classificationName = $classificationTop.classificationName)
 #if ($count != 0)
         ,
 #end
@@ -263,56 +290,56 @@ public interface ${glCDef} extends Classification {
         }
 
         public OptionalThing<? extends Classification> of(Object code) {
-#foreach ($classificationName in $database.classificationNameList)
+#foreach ($classificationName in $tableMap.classificationNameList)
             if (${classificationName}.name().equals(name())) { return ${glCDef}.${classificationName}.of(code); }
 #end
             throw new IllegalStateException("Unknown definition: " + this); // basically unreachable
         }
 
         public OptionalThing<? extends Classification> byName(String name) {
-#foreach ($classificationName in $database.classificationNameList)
+#foreach ($classificationName in $tableMap.classificationNameList)
             if (${classificationName}.name().equals(name())) { return ${glCDef}.${classificationName}.byName(name); }
 #end
             throw new IllegalStateException("Unknown definition: " + this); // basically unreachable
         }
 
         public Classification codeOf(Object code) { // null if not found, old style so use classificationOf(code)
-#foreach ($classificationName in $database.classificationNameList)
+#foreach ($classificationName in $tableMap.classificationNameList)
             if (${classificationName}.name().equals(name())) { return ${glCDef}.${classificationName}.codeOf(code); }
 #end
             throw new IllegalStateException("Unknown definition: " + this); // basically unreachable
         }
 
         public Classification nameOf(String name) { // null if not found, old style so use classificationByName(name)
-#foreach ($classificationName in $database.classificationNameList)
+#foreach ($classificationName in $tableMap.classificationNameList)
             if (${classificationName}.name().equals(name())) { return ${glCDef}.${classificationName}.valueOf(name); }
 #end
             throw new IllegalStateException("Unknown definition: " + this); // basically unreachable
         }
 
         public List<Classification> listAll() {
-#foreach ($classificationName in $database.classificationNameList)
+#foreach ($classificationName in $tableMap.classificationNameList)
             if (${classificationName}.name().equals(name())) { return toClassificationList(${glCDef}.${classificationName}.listAll()); }
 #end
             throw new IllegalStateException("Unknown definition: " + this); // basically unreachable
         }
 
         public List<Classification> listByGroup(String groupName) { // exception if not found
-#foreach ($classificationName in $database.classificationNameList)
+#foreach ($classificationName in $tableMap.classificationNameList)
             if (${classificationName}.name().equals(name())) { return toClassificationList(${glCDef}.${classificationName}.listByGroup(groupName)); }
 #end
             throw new IllegalStateException("Unknown definition: " + this); // basically unreachable
         }
 
         public List<? extends Classification> listOf(Collection<String> codeList) {
-#foreach ($classificationName in $database.classificationNameList)
+#foreach ($classificationName in $tableMap.classificationNameList)
             if (${classificationName}.name().equals(name())) { return ${glCDef}.${classificationName}.listOf(codeList); }
 #end
             throw new IllegalStateException("Unknown definition: " + this); // basically unreachable
         }
 
         public List<Classification> groupOf(String groupName) { // old style
-#foreach ($classificationName in $database.classificationNameList)
+#foreach ($classificationName in $tableMap.classificationNameList)
             if (${classificationName}.name().equals(name())) { return toClassificationList(${glCDef}.${classificationName}.groupOf(groupName)); }
 #end
             throw new IllegalStateException("Unknown definition: " + this); // basically unreachable
@@ -324,8 +351,8 @@ public interface ${glCDef} extends Classification {
         }
 
         public ClassificationCodeType codeType() {
-#foreach ($classificationName in $database.classificationNameList)
-#set ($classificationTop = $database.getClassificationTop($classificationName))
+#foreach ($classificationTop in $tableMap.classificationTopList)
+#set ($classificationName = $classificationTop.classificationName)
 #if ($classificationTop.hasCodeType())
             if (${classificationName}.name().equals(name())) { return ClassificationCodeType.${classificationTop.codeType}; }
 #end
@@ -334,8 +361,8 @@ public interface ${glCDef} extends Classification {
         }
 
         public ClassificationUndefinedHandlingType undefinedHandlingType() {
-#foreach ($classificationName in $database.classificationNameList)
-#set ($classificationTop = $database.getClassificationTop($classificationName))
+#foreach ($classificationTop in $tableMap.classificationTopList)
+#set ($classificationName = $classificationTop.classificationName)
             if (${classificationName}.name().equals(name())) { return ClassificationUndefinedHandlingType.${classificationTop.undefinedHandlingType}; }
 #end
             return ClassificationUndefinedHandlingType.LOGGING; // as default
@@ -343,7 +370,7 @@ public interface ${glCDef} extends Classification {
 
         public static OptionalThing<${glCDef}.DefMeta> find(String classificationName) { // instead of valueOf()
             if (classificationName == null) { throw new IllegalArgumentException("The argument 'classificationName' should not be null."); }
-#foreach ($classificationName in $database.classificationNameList)
+#foreach ($classificationName in $tableMap.classificationNameList)
             if (${classificationName}.name().equalsIgnoreCase(classificationName)) { return OptionalThing.of(${glCDef}.DefMeta.${classificationName}); }
 #end
             return OptionalThing.ofNullable(null, () -> {
@@ -353,7 +380,8 @@ public interface ${glCDef} extends Classification {
 
         public static ${glCDef}.DefMeta meta(String classificationName) { // old style so use byName(name)
             if (classificationName == null) { throw new IllegalArgumentException("The argument 'classificationName' should not be null."); }
-#foreach ($classificationName in $database.classificationNameList)
+#foreach ($classificationName in $tableMap.classificationNameList)
+#set ($classificationName = $classificationTop.classificationName)
             if (${classificationName}.name().equalsIgnoreCase(classificationName)) { return ${glCDef}.DefMeta.${classificationName}; }
 #end
             throw new IllegalStateException("Unknown classification: " + classificationName);
