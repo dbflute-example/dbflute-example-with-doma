@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en"> <!-- main language (to avoid HTML validator) -->
 <head>
 	<meta charset="UTF-8" />
 	<title>domadb schema</title>
@@ -152,6 +152,9 @@ td {
 	font-size: 0.7em;
 	color: #3F7E5E;
 }
+.commentcellerror {
+	color: red;
+}
 .subcell {
 	font-size: 0.6em;
 }
@@ -265,6 +268,63 @@ dl.procedurelist dd.column span.type {
 dl.procedurelist dd.column pre {
 	padding-left: 1em;
 }
+
+/** decomment modal for dbflute intro */
+.decommentmodal {
+	display: none;
+	position: fixed;
+	z-index: 5;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	padding-top: 50px;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+.decommentmodalcontent {
+	position: relative;
+	z-index: 10;
+	width: 50%;
+	margin: 0 auto;
+	border: 1px solid #999999;
+	padding: 15px;
+	background-color: #ffffff;
+	border-radius: 4px;
+}
+.decommentmodalcontent p {
+	font-size: 14px;
+}
+.decommentinput {
+	display: block;
+	width: 100%;
+	margin-top: 10px;
+	font-size: 12px;
+}
+.decommentmodal-ok-btn {
+	margin: 10px 5px 0 0;
+	padding: 5px 10px;
+	border-radius: 4px;
+}
+.decommentmodal-close-btn {
+	position: absolute;
+	margin-left: 10px;
+	padding: 0;
+	right: 10px;
+	top: 5px;
+	cursor: pointer;
+	width: 28px;
+	height: 28px;
+	border: 0;
+	border-radius: 50%;
+	color: #657786;
+	font-size: 14px;
+	line-height: 24px;
+	text-align: center;
+	transition: box-shadow .15s ease-in-out;
+}
+.decommentmodal-close-btn:hover {
+	background-color: #eed;
+}
 	</style>
 </head>
 
@@ -292,6 +352,7 @@ dl.procedurelist dd.column pre {
 		<th>Type</th>
 		<th>ForeignTable</th>
 		<th>ReferrerTable</th>
+		<th>TableComment</th>
 		<th>EntityName</th>
 	</tr>
 	</thead>
@@ -299,19 +360,21 @@ dl.procedurelist dd.column pre {
 	<tr>
 		<td class="rownumcell">1</td>
 		<td class="aliascell"></td>
-		<td><a href="#department" title="type=TABLE, primaryKey={ID}, nameLength=10, columnCount=3">DEPARTMENT</a></td>
+		<td class="namecell"><a href="#department" title="type=TABLE, primaryKey={ID}, nameLength=10, columnCount=3">DEPARTMENT</a></td>
 		<td class="typecell">TABLE</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
+		<td class="commentcell DEPARTMENT_comment"><pre>&nbsp;</pre></td>
 		<td class="subcell">Department</td>
 	</tr>
 	<tr>
 		<td class="rownumcell">2</td>
 		<td class="aliascell"></td>
-		<td><a href="#employee" title="type=TABLE, primaryKey={ID}, nameLength=8, columnCount=10">EMPLOYEE</a></td>
+		<td class="namecell"><a href="#employee" title="type=TABLE, primaryKey={ID}, nameLength=8, columnCount=10">EMPLOYEE</a></td>
 		<td class="typecell">TABLE</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
+		<td class="commentcell EMPLOYEE_comment"><pre>&nbsp;</pre></td>
 		<td class="subcell">Employee</td>
 	</tr>
 	</tbody>
@@ -320,7 +383,9 @@ dl.procedurelist dd.column pre {
 <h2 id="department" title="type=TABLE, primaryKey={ID}, nameLength=10, columnCount=3">
 DEPARTMENT
 </h2>
-<table>
+<div class="tablecomment DEPARTMENT_comment" data-name="DEPARTMENT"><pre></pre></div>
+<input type="hidden" value="DEPARTMENT">
+<table class="tablecontent">
 	<thead>
 	<tr>
 		<th class="rownumhead">No.</th>
@@ -336,6 +401,7 @@ DEPARTMENT
 		<th>ForeignTable</th>
 		<th>ReferrerTable</th>
 		<th>Classification</th>
+		<th>ColumnComment</th>
 		<th>PropertyName</th>
 		<th>JavaType</th>
 	</tr>
@@ -348,12 +414,13 @@ DEPARTMENT
 		<td class="flgcell">&nbsp;</td>
 		<td class="flgcell">*</td>
 		<td class="aliascell"></td>
-		<td id="department_id">ID</td>
+		<td class=" columnnamecell" id="department_id">ID</td>
 		<td class="typecell">INTEGER</td>
 		<td class="sizecell"> 10 </td>
 		<td class="relcell">&nbsp;&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell"> &nbsp;</td>
+		<td class="commentcell"><pre>&nbsp;</pre></td>
 		<td class="subcell">id</td>
 		<td class="subcell">Integer</td>
 	</tr>
@@ -365,12 +432,13 @@ DEPARTMENT
 		<td class="flgcell">&nbsp;</td>
 		<td class="flgcell">*</td>
 		<td class="aliascell"></td>
-		<td id="department_name">NAME</td>
+		<td class=" columnnamecell" id="department_name">NAME</td>
 		<td class="typecell">VARCHAR</td>
 		<td class="sizecell"> 255 </td>
 		<td class="relcell">&nbsp;&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell"> &nbsp;</td>
+		<td class="commentcell"><pre>&nbsp;</pre></td>
 		<td class="subcell">name</td>
 		<td class="subcell">String</td>
 	</tr>
@@ -382,20 +450,24 @@ DEPARTMENT
 		<td class="flgcell">&nbsp;</td>
 		<td class="flgcell">*</td>
 		<td class="aliascell"></td>
-		<td id="department_version">VERSION</td>
+		<td class=" columnnamecell" id="department_version">VERSION</td>
 		<td class="typecell">INTEGER</td>
 		<td class="sizecell"> 10 </td>
 		<td class="relcell">&nbsp;&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell"> &nbsp;</td>
+		<td class="commentcell"><pre>&nbsp;</pre></td>
 		<td class="subcell">version</td>
 		<td class="subcell">Integer</td>
 	</tr>
 </table>
+
 <h2 id="employee" title="type=TABLE, primaryKey={ID}, nameLength=8, columnCount=10">
 EMPLOYEE
 </h2>
-<table>
+<div class="tablecomment EMPLOYEE_comment" data-name="EMPLOYEE"><pre></pre></div>
+<input type="hidden" value="EMPLOYEE">
+<table class="tablecontent">
 	<thead>
 	<tr>
 		<th class="rownumhead">No.</th>
@@ -411,6 +483,7 @@ EMPLOYEE
 		<th>ForeignTable</th>
 		<th>ReferrerTable</th>
 		<th>Classification</th>
+		<th>ColumnComment</th>
 		<th>PropertyName</th>
 		<th>JavaType</th>
 	</tr>
@@ -423,12 +496,13 @@ EMPLOYEE
 		<td class="flgcell">&nbsp;</td>
 		<td class="flgcell">*</td>
 		<td class="aliascell"></td>
-		<td id="employee_id">ID</td>
+		<td class=" columnnamecell" id="employee_id">ID</td>
 		<td class="typecell">INTEGER</td>
 		<td class="sizecell"> 10 </td>
 		<td class="relcell">&nbsp;&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell"> &nbsp;</td>
+		<td class="commentcell"><pre>&nbsp;</pre></td>
 		<td class="subcell">id</td>
 		<td class="subcell">Integer</td>
 	</tr>
@@ -440,12 +514,13 @@ EMPLOYEE
 		<td class="flgcell">&nbsp;</td>
 		<td class="flgcell">*</td>
 		<td class="aliascell"></td>
-		<td id="employee_name">NAME</td>
+		<td class=" columnnamecell" id="employee_name">NAME</td>
 		<td class="typecell">VARCHAR</td>
 		<td class="sizecell"> 255 </td>
 		<td class="relcell">&nbsp;&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell"> &nbsp;</td>
+		<td class="commentcell"><pre>&nbsp;</pre></td>
 		<td class="subcell">name</td>
 		<td class="subcell">String</td>
 	</tr>
@@ -457,12 +532,13 @@ EMPLOYEE
 		<td class="flgcell">&nbsp;</td>
 		<td class="flgcell">*</td>
 		<td class="aliascell"></td>
-		<td id="employee_age">AGE</td>
+		<td class=" columnnamecell" id="employee_age">AGE</td>
 		<td class="typecell">INTEGER</td>
 		<td class="sizecell"> 10 </td>
 		<td class="relcell">&nbsp;&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell"> &nbsp;</td>
+		<td class="commentcell"><pre>&nbsp;</pre></td>
 		<td class="subcell">age</td>
 		<td class="subcell">Integer</td>
 	</tr>
@@ -474,12 +550,13 @@ EMPLOYEE
 		<td class="flgcell">&nbsp;</td>
 		<td class="flgcell"> &nbsp;</td>
 		<td class="aliascell"></td>
-		<td id="employee_salary">SALARY</td>
+		<td class=" columnnamecell" id="employee_salary">SALARY</td>
 		<td class="typecell">INTEGER</td>
 		<td class="sizecell"> 10 </td>
 		<td class="relcell">&nbsp;&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell"> &nbsp;</td>
+		<td class="commentcell"><pre>&nbsp;</pre></td>
 		<td class="subcell">salary</td>
 		<td class="subcell">Integer</td>
 	</tr>
@@ -491,12 +568,13 @@ EMPLOYEE
 		<td class="flgcell">&nbsp;</td>
 		<td class="flgcell"> &nbsp;</td>
 		<td class="aliascell"></td>
-		<td id="employee_job_type">JOB_TYPE</td>
+		<td class=" columnnamecell" id="employee_job_type">JOB_TYPE</td>
 		<td class="typecell">VARCHAR</td>
 		<td class="sizecell"> 20 </td>
 		<td class="relcell">&nbsp;&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell"> &nbsp;</td>
+		<td class="commentcell"><pre>&nbsp;</pre></td>
 		<td class="subcell">jobType</td>
 		<td class="subcell">String</td>
 	</tr>
@@ -508,12 +586,13 @@ EMPLOYEE
 		<td class="flgcell">&nbsp;</td>
 		<td class="flgcell"> &nbsp;</td>
 		<td class="aliascell"></td>
-		<td id="employee_hiredate">HIREDATE</td>
+		<td class=" columnnamecell" id="employee_hiredate">HIREDATE</td>
 		<td class="typecell">TIMESTAMP</td>
 		<td class="sizecell"> 23, 10 </td>
 		<td class="relcell">&nbsp;&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell"> &nbsp;</td>
+		<td class="commentcell"><pre>&nbsp;</pre></td>
 		<td class="subcell">hiredate</td>
 		<td class="subcell">LocalDateTime</td>
 	</tr>
@@ -525,12 +604,13 @@ EMPLOYEE
 		<td class="flgcell">&nbsp;</td>
 		<td class="flgcell"> &nbsp;</td>
 		<td class="aliascell"></td>
-		<td id="employee_department_id">DEPARTMENT_ID</td>
+		<td class=" columnnamecell" id="employee_department_id">DEPARTMENT_ID</td>
 		<td class="typecell">INTEGER</td>
 		<td class="sizecell"> 10 </td>
 		<td class="relcell">&nbsp;&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell"> &nbsp;</td>
+		<td class="commentcell"><pre>&nbsp;</pre></td>
 		<td class="subcell">departmentId</td>
 		<td class="subcell">Integer</td>
 	</tr>
@@ -542,12 +622,13 @@ EMPLOYEE
 		<td class="flgcell">&nbsp;</td>
 		<td class="flgcell">*</td>
 		<td class="aliascell"></td>
-		<td id="employee_version">VERSION</td>
+		<td class=" columnnamecell" id="employee_version">VERSION</td>
 		<td class="typecell">INTEGER</td>
 		<td class="sizecell"> 10 </td>
 		<td class="relcell">&nbsp;&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell"> &nbsp;</td>
+		<td class="commentcell"><pre>&nbsp;</pre></td>
 		<td class="subcell">version</td>
 		<td class="subcell">Integer</td>
 	</tr>
@@ -559,12 +640,13 @@ EMPLOYEE
 		<td class="flgcell">&nbsp;</td>
 		<td class="flgcell"> &nbsp;</td>
 		<td class="aliascell"></td>
-		<td id="employee_inserttimestamp">INSERTTIMESTAMP</td>
+		<td class=" columnnamecell" id="employee_inserttimestamp">INSERTTIMESTAMP</td>
 		<td class="typecell">TIMESTAMP</td>
 		<td class="sizecell"> 23, 10 </td>
 		<td class="relcell">&nbsp;&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell"> &nbsp;</td>
+		<td class="commentcell"><pre>&nbsp;</pre></td>
 		<td class="subcell">inserttimestamp</td>
 		<td class="subcell">LocalDateTime</td>
 	</tr>
@@ -576,16 +658,18 @@ EMPLOYEE
 		<td class="flgcell">&nbsp;</td>
 		<td class="flgcell"> &nbsp;</td>
 		<td class="aliascell"></td>
-		<td id="employee_updatetimestamp">UPDATETIMESTAMP</td>
+		<td class=" columnnamecell" id="employee_updatetimestamp">UPDATETIMESTAMP</td>
 		<td class="typecell">TIMESTAMP</td>
 		<td class="sizecell"> 23, 10 </td>
 		<td class="relcell">&nbsp;&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell"> &nbsp;</td>
+		<td class="commentcell"><pre>&nbsp;</pre></td>
 		<td class="subcell">updatetimestamp</td>
 		<td class="subcell">LocalDateTime</td>
 	</tr>
 </table>
+
 
 
 <h2 id="procedure">Procedure</h2>
@@ -594,6 +678,16 @@ EMPLOYEE
 <p>
 	Created by <a href="http://dbflute.org/">DBFlute(AutoGenerator)</a>
 </p>
+
+<!-- Only used by dbflute intro http://dbflute.seasar.org/ja/manual/function/helper/intro/index.html -->
+<div id="decomment-modal" class="decommentmodal">
+	<div class="decommentmodalcontent">
+		<div id="decomment-close" class="decommentmodal-close-btn"><span>x</span></div>
+		<p>Input the new column comment of <span id="decomment-modal-column-info"></span></p>
+		<textarea id="decomment-input" class="decommentinput" rows="5"></textarea>
+		<button id="decomment-ok" class="decommentmodal-ok-btn">OK</button>
+	</div>
+</div>
 <script>
 /**
  * Incremental Search contributed by makotot (Thanks!)
@@ -619,7 +713,7 @@ function Incremental (targetInput, dist) {
 Incremental.prototype = {
 
 	/**
-	 * @method init
+	 * Init
 	 */
 	init: function () {
 		var dataList = this.getDataList();
@@ -631,7 +725,7 @@ Incremental.prototype = {
 	},
 
 	/**
-	 * @method buildSuggetList
+	 * Build sugget list
 	 */
 	buildSuggestList: function () {
 		var fragment = document.createDocumentFragment(),
@@ -646,7 +740,7 @@ Incremental.prototype = {
 	},
 
 	/**
-	 * @method setupLinkElement
+	 * Setup link element
 	 */
 	setupLinkElement: function (fragment) {
 		var li, anchor;
@@ -671,7 +765,7 @@ Incremental.prototype = {
 	},
 
 	/**
-	 * @method attachEvent
+	 * Attach event
 	 */
 	attachEvent: function () {
 		var self = this,
@@ -684,7 +778,7 @@ Incremental.prototype = {
 	},
 
 	/**
-	 * @method displaySuggestion
+	 * Display suggestion
 	 */
 	displaySuggestion: function () {
 		this.query = (this.util.trim(this.targetInput.value)).toLowerCase();
@@ -734,7 +828,7 @@ Incremental.prototype = {
 	},
 
 	/**
-	 * @method getDataList
+	 * Get data list
 	 */
 	getDataList: function () {
 		var tr = this.dist.getElementsByTagName('tr'),
@@ -753,7 +847,7 @@ Incremental.prototype = {
 	},
 
 	/**
-	 * @method attachSuggestionEvent
+	 * Attach suggestion event
 	 */
 	attachSuggestionEvent: function () {
 		var self = this;
@@ -770,7 +864,7 @@ Incremental.prototype = {
 	},
 
 	/**
-	 * @method selectSuggestion
+	 * Select suggestion
 	 */
 	selectSuggestion: function (ev) {
 		var keyCode = ev.keyCode,
@@ -809,8 +903,8 @@ Incremental.prototype = {
 	},
 
 	/**
-	 * @method setInputValue
-	 * @param ev {Object}
+	 * Set input value
+	 * @param {Object} ev
 	 */
 	setInputValue: function (ev) {
 		var keyCode = ev.keyCode,
@@ -832,7 +926,7 @@ Incremental.prototype = {
 	},
 
 	/**
-	 * @method filterVisibleChild
+	 * Filter visible child
 	 */
 	filterVisibleChild: function () {
 		var visibleChildNodes = [];
@@ -855,7 +949,7 @@ Incremental.prototype = {
 	},
 
 	/**
-	 * @method clearSuggestion
+	 * Clear suggestion
 	 */
 	clearSuggestion: function () {
 		for (var i = 0, max = this.ul.childNodes.length; i < max; i++) {
@@ -867,7 +961,7 @@ Incremental.prototype = {
 	},
 
 	/**
-	 * @method resetSuggestion
+	 * Reset suggestion
 	 */
 	resetSuggestion: function () {
 		this.clearSuggestion();
@@ -876,9 +970,9 @@ Incremental.prototype = {
 	},
 
 	/**
-	 * @method getSelectedSection
-	 * @param suggestionNode {Object}
-	 * @return selectedIdx {Number}
+	 * Get selected section
+	 * @param {Object} suggestionNode
+	 * @return {number} Selected Index
 	 */
 	getSelectedSection: function (suggestionNode) {
 		var selectedIdx;
@@ -894,8 +988,8 @@ Incremental.prototype = {
 	},
 
 	/**
-	 * @method scrollToSelectedSection
-	 * @param idx {Number}
+	 * Scroll to selected section
+	 * @param {number} idx
 	 */
 	scrollToSelectedSection: function (idx) {
 		var selectedId = this.ul.childNodes[idx].getElementsByTagName('a')[0].href.split('#')[1],
@@ -906,7 +1000,7 @@ Incremental.prototype = {
 	},
 
 	/**
-	 * @method setHash
+	 * Set hash
 	 */
 	setHash: function (idx) {
 		var selectedId = this.ul.childNodes[idx].getElementsByTagName('a')[0].href.split('#')[1];
@@ -943,6 +1037,818 @@ Incremental.prototype.util = {
 
 var searcher = new Incremental(document.getElementById('incremental-search-field'), document.getElementById('table-list-body'));
 searcher.init();
+</script>
+<script>
+/**
+ * @author deco
+ * @author cabos
+ */
+function Decomment() {
+	// setup from dbflute if decomment pickup exists
+	this.embeddedPickup = {
+		'tables': [
+		]
+	}
+	this.pickupStore = {
+		'DEPARTMENT': {
+			'databaseComment': ''
+			, 'columns': {
+				'ID': {
+					'databaseComment': ''
+				}
+				, 'NAME': {
+					'databaseComment': ''
+				}
+				, 'VERSION': {
+					'databaseComment': ''
+				}
+			}
+		}
+		, 'EMPLOYEE': {
+			'databaseComment': ''
+			, 'columns': {
+				'ID': {
+					'databaseComment': ''
+				}
+				, 'NAME': {
+					'databaseComment': ''
+				}
+				, 'AGE': {
+					'databaseComment': ''
+				}
+				, 'SALARY': {
+					'databaseComment': ''
+				}
+				, 'JOB_TYPE': {
+					'databaseComment': ''
+				}
+				, 'HIREDATE': {
+					'databaseComment': ''
+				}
+				, 'DEPARTMENT_ID': {
+					'databaseComment': ''
+				}
+				, 'VERSION': {
+					'databaseComment': ''
+				}
+				, 'INSERTTIMESTAMP': {
+					'databaseComment': ''
+				}
+				, 'UPDATETIMESTAMP': {
+					'databaseComment': ''
+				}
+			}
+		}
+	}
+}
+Decomment.prototype = {
+
+	/**
+	 * init
+	 */
+	init: function () {
+		if (document.getElementById("intro_opening") !== null) {
+			var schemeName = this.getSchemeName();
+			this.fetchVirtualPickup(schemeName);
+			this.setupSaveDecomment(schemeName);
+			this.setupKeyDownEvent();
+		} else {
+			this.reflectEmbeddedPickup();
+		}
+	},
+
+	/**
+	 * Get scheme name from url
+	 * @returns {string} Scheme name
+	 */
+	getSchemeName: function () {
+		return "domadb";
+	},
+
+	/**
+	 * Fetch virtual pickup from server
+	 * @param {string} schemeName - Scheme name
+	 */
+	fetchVirtualPickup: function (schemeName) {
+		var http = new XMLHttpRequest();
+		http.withCredentials = true;
+		var url = this.getHostName() + '/api/document/decomment/' + schemeName + '/pickup';
+		http.open('GET', url, true);
+
+		that = this;
+		http.onreadystatechange = function () {
+			if (http.readyState === 4) {
+				if (http.status === 200) {
+					that.handlePickupResponse(http.response);
+				} else {
+					alert('Error!! cannot fetch decomment.');
+				}
+			}
+		};
+		http.send();
+	},
+
+	/**
+	 * Reflect embedded pick
+	 */
+	reflectEmbeddedPickup: function () {
+		this.reflectPickup(this.embeddedPickup);
+	},
+
+	/**
+	 * Handle pickup response
+	 * @param {Object} response - Response from server
+	 */
+	handlePickupResponse: function (response) {
+		var decomment = JSON.parse(response);
+		this.reflectPickup(decomment);
+	},
+
+	/**
+	 * Reflect pickup
+	 * @param {Object} decomment - Decomment object
+	 */
+	reflectPickup: function (decomment) {
+		that = this;
+		Array.prototype.forEach.call(decomment["tables"], function (table) {
+			var tableElements = that.extractTableElements(table);
+			if (that.storePickupTableProperties(table)) {
+				var newTableComment = that.buildDisplayTableCommentFromServer(table);
+				var authors = that.getTableMapInfoFromStore(that.getTableNameFromJson(table))['authors'];
+				that.storePreviousWholeTableComment(table, newTableComment, authors);
+				that.updateDisplayTableCommentToHtml(tableElements, newTableComment, authors);
+				that.reflectTableCommentConflictIfNeed(table, tableElements);
+			}
+			Array.prototype.forEach.call(table["columns"], function (column) {
+				var columnElement = that.extractColumnElement(table, column);
+				that.storePickupColumnProperties(table, column);
+				var newComment = that.buildDisplayColumnCommentFromServer(table, column);
+				var authors = that.buildColumnCommentAuthoers(table, column);
+				that.storePreviousWholeColumnComment(table, column, newComment);
+				that.updateDisplayColumnCommentToHtml(columnElement, newComment, authors);
+				that.reflectCommentConflictIfNeed(table, column, columnElement);
+			});
+		});
+	},
+
+	/**
+	 * Extract table element
+	 * @param {Object} table - Table object
+	 * @returns {Object} Column element
+	 */
+	extractTableElements: function (table) {
+		var className = (table["tableName"] + "_" + "comment");
+		var tableElements = document.getElementsByClassName(className);
+		return tableElements;
+	},
+
+	/**
+	 * Extract column element
+	 * @param {Object} table - Table object
+	 * @param {Object} column - Column object
+	 * @returns {Object} Column element
+	 */
+	extractColumnElement: function (table, column) {
+		var columnId = (table["tableName"] + "_" + column["columnName"]);
+		columnId = columnId.toLowerCase();
+		var columnElement = document.getElementById(columnId);
+		return columnElement.parentElement
+	},
+
+	/**
+	 * Store table comment properties
+	 * @param {Object} table - Table object
+	 * @retuns {Boolean} if properties saved
+	 */
+	storePickupTableProperties: function(table) {
+		var tableName = this.getTableNameFromJson(table);
+		if (this.pickupStore[tableName] === undefined) {
+			this.pickupStore[tableName] = {};
+		}
+
+		var tableMap = this.getTableMapInfoFromStore(tableName);
+		var databaseComment = tableMap['databaseComment'];
+		var properties = table['properties'];
+		if (properties.length == 0) {
+			return false;
+		}
+
+		// properties to store
+		var isConflict = properties.length > 1;
+		var isDatabaseCommentConflict = false;
+		var decomments = [];
+		var previousPieces = [];
+		var authors = [];
+		var commentVersion = 0;
+		var that = this;
+		Array.prototype.forEach.call(properties, function (property) {
+			if (property['databaseComment'] != null && databaseComment != null && !isDatabaseCommentConflict) {
+				isDatabaseCommentConflict = that.escapeNewlineCharacter(databaseComment) != that.escapeNewlineCharacter(property['databaseComment']);
+			}
+			decomments.push(property["decomment"]);
+			if (property['pieceCode'] != null) {
+				previousPieces.push(property['pieceCode']);
+			}
+			authors = authors.concat(property['authors']);
+			if (commentVersion < property['commentVersion']) {
+				commentVersion = property['commentVersion'];
+			}
+		});
+		authors = authors.filter(function (x, i, self) {
+			return self.indexOf(x) === i;
+		});
+
+		tableMap['isConflict'] = isConflict || isDatabaseCommentConflict;
+		tableMap['isDatabaseCommentConflict'] = isDatabaseCommentConflict;
+		tableMap['decomments'] = decomments;
+		tableMap['previousPieces'] = previousPieces;
+		tableMap['authors'] = authors;
+		tableMap['commentVersion'] = commentVersion;
+		return true;
+	},
+
+	/**
+	 * Store column comment properties
+	 * @param {Object} table - Table object
+	 * @param {Object} column - Column object
+	 */
+	storePickupColumnProperties: function (table, column) {
+		var tableName = this.getTableNameFromJson(table);
+		var columnName = this.getColumnNameFromJson(column);
+		if (this.pickupStore[tableName] === undefined) {
+			this.pickupStore[tableName] = {};
+		}
+		if (this.pickupStore[tableName]['columns'] === undefined) {
+			this.pickupStore[tableName]['columns'] = {};
+		}
+		if (this.pickupStore[tableName]['columns'][columnName] === undefined) {
+			this.pickupStore[tableName]['columns'][columnName] = {};
+		}
+
+		var columnMap = this.getColumnMapInfoFromStore(tableName, columnName)
+		var databaseComment = columnMap['databaseComment'];
+		var properties = column['properties'];
+
+		// properties to store
+		var isConflict = properties.length > 1;
+		var isDatabaseCommentConflict = false;
+		var decomments = [];
+		var previousPieces = [];
+		var authors = [];
+		var commentVersion = 0;
+		var that = this;
+		Array.prototype.forEach.call(properties, function (property) {
+			if (property['databaseComment'] != null && databaseComment != null && !isDatabaseCommentConflict) {
+				isDatabaseCommentConflict = that.escapeNewlineCharacter(databaseComment) != that.escapeNewlineCharacter(property['databaseComment']);
+			}
+			decomments.push(property["decomment"]);
+			if (property['pieceCode'] != null) {
+				previousPieces.push(property['pieceCode']);
+			}
+			authors = authors.concat(property['authors']);
+			if (commentVersion < property['commentVersion']) {
+				commentVersion = property['commentVersion'];
+			}
+		});
+		authors = authors.filter(function (x, i, self) {
+			return self.indexOf(x) === i;
+		});
+
+		columnMap['isConflict'] = isConflict || isDatabaseCommentConflict;
+		columnMap['isDatabaseCommentConflict'] = isDatabaseCommentConflict;
+		columnMap['decomments'] = decomments;
+		columnMap['previousPieces'] = previousPieces;
+		columnMap['authors'] = authors;
+		columnMap['commentVersion'] = commentVersion;
+	},
+
+	/**
+	 * Store new column comment properties
+	 * @param {Object} table - Table object
+	 * @param {Object} column - Column object
+	 * @param {string} newComment - Comment from server
+	 */
+	storePreviousWholeTableComment: function (table, newComment) {
+		var tableName = this.getTableNameFromJson(table);
+		var tableMap = this.getTableMapInfoFromStore(tableName);
+		if (tableMap !== null) {
+			tableMap['previousWholeComment'] = newComment;
+		}
+	},
+
+	/**
+	 * Store new column comment properties
+	 * @param {Object} table - Table object
+	 * @param {Object} column - Column object
+	 * @param {string} newComment - Comment from server
+	 */
+	storePreviousWholeColumnComment: function (table, column, newComment) {
+		var tableName = this.getTableNameFromJson(table);
+		var columnName = this.getColumnNameFromJson(column);
+		var columnMap = this.getColumnMapInfoFromStore(tableName, columnName);
+		if (columnMap !== null) {
+			columnMap['previousWholeComment'] = newComment;
+		}
+	},
+
+	/**
+	 * Build new table comment from server response
+	 * @param {Object} table - table object
+	 * @returns {string} New scheme comment
+	 */
+	buildDisplayTableCommentFromServer: function (table) {
+		var tableName = this.getTableNameFromJson(table);
+		var tableMap = this.getTableMapInfoFromStore(tableName);
+		return this.buildDisplayCommentFromServer(tableMap);
+	},
+
+	/**
+	 * Build new column comment from server response
+	 * @param {Object} table - table object
+	 * @param {Object} column - Column object
+	 * @returns {string} New scheme comment
+	 */
+	buildDisplayColumnCommentFromServer: function (table, column) {
+		var tableName = this.getTableNameFromJson(table);
+		var columnName = this.getColumnNameFromJson(column);
+		var columnMap = this.getColumnMapInfoFromStore(tableName, columnName);
+		return this.buildDisplayCommentFromServer(columnMap);
+	},
+
+	/**
+	 * Build display comment for html
+	 * @param {Object} commentMap - Comment object of table, column
+	 * @retuns {string} Display comment
+	 */
+	buildDisplayCommentFromServer: function(commentMap) {
+		var result = "";
+		if (commentMap['isDatabaseCommentConflict']) {
+			var databaseComment = commentMap['databaseComment'];
+			databaseComment = this.unescapeWhitespace(databaseComment);
+			databaseComment = this.escapeNewlineCharacter(databaseComment);
+			databaseComment = this.escapeInputText(databaseComment);
+			result = databaseComment + '\n(from database comment)\n\n=======\n\n';
+		}
+		result += commentMap['decomments'].join('\n\n=======\n\n');
+		return result;
+	},
+
+	/**
+	 * Build authoers from server response
+	 * @param {Object} table - table object
+	 * @param {Object} column - Column object
+	 * @returns {string} New scheme comment
+	 */
+	buildColumnCommentAuthoers: function (table, column) {
+		var tableName = this.getTableNameFromJson(table);
+		var columnName = this.getColumnNameFromJson(column);
+		var columnMap = this.getColumnMapInfoFromStore(tableName, columnName);
+		return columnMap['authors'];
+	},
+
+	/**
+	 * Update table comment of html
+	 * @param {Object} tableElements - Table elements
+	 * @param {string} newComment - New scheme comment
+	 * @param {Array} authors - Comment authoers
+	 */
+	updateDisplayTableCommentToHtml: function (tableElements, newComment, authors) {
+		var author = authors.join(',');
+		var comment = newComment + "\n<span>@author(" + author + ")</span>";
+		Array.prototype.forEach.call(tableElements, function (element) {
+			element.querySelector('pre').innerHTML = comment;
+		});
+	},
+
+	/**
+	 * Update column comment of html
+	 * @param {Object} columnElement - Column element
+	 * @param {string} newComment - New scheme comment
+	 * @param {Array} authors - Comment authoers
+	 */
+	updateDisplayColumnCommentToHtml: function (columnElement, newComment, authors) {
+		var author = authors.join(',');
+		var comment = newComment + "\n<span>@author(" + author + ")</span>";
+		columnElement.querySelector('.commentcell').querySelector('pre').innerHTML = comment;
+	},
+
+	/**
+	 * Add error class if table comment is conflict
+	 * @param {Object} table - Table object
+	 * @param {Object} column - Column object
+	 * @param {Object} columnElement - Column element
+	 */
+	reflectTableCommentConflictIfNeed: function(table, tableElements) {
+		var tableName = this.getTableNameFromJson(table);
+		if (this.isTableCommentConflict(tableName)) {
+			Array.prototype.forEach.call(tableElements, function (element) {
+				element.className += " commentcellerror"
+			});
+		}
+	},
+
+	/**
+	 * Add error class if comment is conflict
+	 * @param {Object} table - Table object
+	 * @param {Object} column - Column object
+	 * @param {Object} columnElement - Column element
+	 */
+	reflectCommentConflictIfNeed: function(table, column, columnElement) {
+		var tableName = this.getTableNameFromJson(table);
+		var columnName = this.getColumnNameFromJson(column);
+		if (this.isColumnCommentConflict(tableName, columnName)) {
+			columnElement.querySelector('.commentcell').className += " commentcellerror"
+		}
+	},
+
+	/**
+	 * Check the table comment is conflict
+	 * @param {String} tableName - Table name
+	 * @returns {Boolean} comment is conflict
+	 */
+	isTableCommentConflict: function(tableName) {
+		var tableMap = this.getTableMapInfoFromStore(tableName);
+		return this.isCommentConflict(tableMap);
+	},
+
+	/**
+	 * Check the column comment is conflict
+	 * @param {String} tableName - Table name
+	 * @param {String} columnName - Column name
+	 * @returns {Boolean} comment is conflict
+	 */
+	isColumnCommentConflict: function(tableName, columnName) {
+		var columnMap = this.getColumnMapInfoFromStore(tableName, columnName);
+		return this.isCommentConflict(columnMap);
+	},
+
+	/**
+	 * Check the comment is conflict
+	 * @param {Object} commentMap - Commnet objedt of table or column
+	 * @returns {Boolean} comment is conflict
+	 */
+	isCommentConflict: function(commentMap) {
+		if (commentMap === null) {
+			return false;
+		}
+		return commentMap['isConflict'] || false;
+	},
+
+	/**
+	 * Setup save decomment event
+	 * @param {string} table - Table name
+	 */
+	setupSaveDecomment: function(schemeName) {
+		this.setupSaveTableCommnt();
+		this.setupSaveColumnComment();
+	},
+
+	/**
+	 * Setup save table comment event
+	 */
+	setupSaveTableCommnt: function() {
+		var that = this;
+		var tableList = document.getElementById('table-list-body').querySelectorAll('tr');
+		Array.prototype.forEach.call(tableList, function (table) {
+			var tableName = table.querySelector('.namecell').querySelector('a').innerText;
+			var commentElement = table.querySelector('.commentcell');
+			that.setupSaveTableClickEvent(tableName, commentElement);
+		});
+		var commentTables = document.querySelectorAll('.tablecomment')
+		Array.prototype.forEach.call(commentTables, function (tableElement) {
+			var tableName = tableElement.getAttribute('data-name');
+			that.setupSaveTableClickEvent(tableName, tableElement);
+		});
+	},
+
+	/**
+	 * Setup save table comment click event to html
+	 * @param {string} tableName - Table name
+	 * @param {Object} commentElement - Comment element
+	 */
+	setupSaveTableClickEvent: function(tableName, commentElement) {
+		var tableMap = this.getTableMapInfoFromStore(tableName);
+		commentElement.onclick = this.createSaveDecommentFunction(tableName, null, tableMap, commentElement);
+	},
+
+	/**
+	 * Setup save column comment event
+	 */
+	setupSaveColumnComment: function () {
+		var tables = document.getElementsByClassName('tablecontent');
+		var that = this;
+		Array.prototype.forEach.call(tables, function (table) {
+			var columns = table.getElementsByTagName('tr');
+			Array.prototype.forEach.call(columns, function (column, index) {
+				if (index === 0) { // because table header
+					return
+				}
+
+				var commentElement = column.querySelector('.commentcell');
+				var tableName = that.getTableNameFromElement(table);
+				var columnName = column.querySelector('.columnnamecell').innerText;
+				var columnMap = that.getColumnMapInfoFromStore(tableName, columnName);
+				commentElement.onclick = that.createSaveDecommentFunction(tableName, columnName, columnMap, commentElement);
+			});
+		});
+	},
+
+	/**
+	 * Create save decomment function
+	 * param {string} tableName - Table name
+	 * param {string} columnName - Column name
+	 * returns {function} Save decomment function
+	 * returns {Object} Coment element of table or column
+	 */
+	createSaveDecommentFunction: function(tableName, columnName, commentMap, commentElement) {
+		var that = this;
+		return function () {
+			var modalElement = document.getElementById("decomment-modal");
+			modalElement.style.display = "block";
+
+			var isConflict = that.isCommentConflict(commentMap);
+			var commentInfo;
+			if (columnName) {
+				var columnNameOfTable = tableName + "." + columnName;
+				columnInfo = isConflict ? columnNameOfTable + " ... but now in CONFLICT!" : columnNameOfTable;
+			} else {
+				columnInfo = isConflict ? tableName + " ... but now in CONFLICT!" : tableName;
+			}
+			document.getElementById("decomment-modal-column-info").innerText = columnInfo;
+
+			var inputElement = document.getElementById("decomment-input");
+			inputElement.value = that.extractPreviousComment(commentElement);
+			inputElement.focus();
+
+			document.getElementById("decomment-close").onclick = function () {
+				modalElement.style.display = "none";
+			};
+
+			document.getElementById("decomment-ok").onclick = function () {
+				var decomment = inputElement.value;
+				if (!that.isCommentChanged(tableName, columnName, decomment)) {
+					modalElement.style.display = "none";
+					return;
+				}
+				var params = that.buildCommentRequestParams(tableName, columnName, decomment);
+				that.requestSaveDecomment(that.getSchemeName(), params);
+				modalElement.style.display = "none";
+			};
+
+			window.onclick = function (event) {
+				if (event.target == modalElement) {
+					modalElement.style.display = "none";
+				}
+			};
+		};
+	},
+
+	/**
+	 * Setup key down event
+	 */
+	setupKeyDownEvent : function() {
+		document.onkeydown = function (e) {
+			// ESC
+			if(e.keyCode == 27){
+				var modalElement = document.getElementById("decomment-modal");
+				modalElement.style.display = "none";
+			}
+		}
+	},
+
+	/**
+	 * Get host name
+	 * @returns {string} Host name
+	 */
+	getHostName: function () {
+		return 'http://' + window.location.host;
+	},
+
+	/**
+	 * Get table name from json
+	 * @param {Object} table - Table object
+	 * @returns {string} Table name lower cased
+	 */
+	getTableNameFromJson: function(table) {
+		return table['tableName'];
+	},
+
+	/**
+	 * Get table name
+	 * @param {Object} table - Table element
+	 * @returns {string} table name
+	 */
+	getTableNameFromElement: function (table) {
+		var previousElement = table.previousElementSibling;
+		return previousElement.value;
+	},
+
+	/**
+	 * Get column name from json
+	 * @param {Object} column - Column object
+	 * @returns {string} Column name lower cased
+	 */
+	getColumnNameFromJson: function(column) {
+		return column['columnName'];
+	},
+
+	/**
+	 * Extract previous comment
+	 * @param {Object} columnCommentElemnet - Ccolumn comment elemnet
+	 * @returns {string} Previous comment
+	 */
+	extractPreviousComment: function (columnCommentElemnet) {
+		var child = columnCommentElemnet.querySelector('pre').childNodes[0];
+		if (child != null && child.nodeName === "#text") {
+			return child.nodeValue.trim();
+		}
+		return "";
+	},
+
+	/**
+	 * Check new decomment and previous comment is different
+	 * @param {string} tableName - Table name
+	 * @param {string} columnName - Column name
+	 * @param {string} decomment - decomment
+	 * @returns {Boolean} is changed
+	 */
+	isCommentChanged: function (tableName, columnName, decomment) {
+		var commentMap;
+		if (columnName) {
+			commentMap = this.getColumnMapInfoFromStore(tableName, columnName);
+		} else {
+			commentMap = this.getTableMapInfoFromStore(tableName);
+		}
+		if (commentMap !== null) {
+			var previousComment = commentMap['previousWholeComment'];
+			if (previousComment) {
+				return previousComment.trim() !== decomment.trim();
+			}
+		}
+		return decomment.trim().length != 0;
+	},
+
+	/**
+	 * Build comment request body
+	 * @param {string} tableName - Table name
+	 * @param {string} columnName - Column name (null if save table comment)
+	 * @param {string} decomment - Inputed decomment
+	 * @return {Object} Request body
+	 */
+	buildCommentRequestParams: function (tableName, columnName, decomment) {
+		var commentMap = this.getCommentMapFromStore(tableName, columnName);
+		var databaseComment;
+		var targetType = columnName == null ? 'TABLE' : 'COLUMN';
+		if (commentMap !== null) {
+			var authors = commentMap['authors'];
+			var previousPieces = commentMap['previousPieces'];
+			var commentVersion = commentMap['commentVersion'];
+			databaseComment = commentMap['databaseComment'];
+			if (databaseComment) {
+				databaseComment = this.escapeNewlineCharacter(databaseComment);
+			}
+		}
+
+		decomment = this.escapeInputText(decomment);
+		decomment = this.deleteUnnecessaryWhitespace(decomment);
+
+		return {
+			'tableName': tableName,
+			'columnName': columnName,
+			'targetType': targetType,
+			'decomment': decomment,
+			'databaseComment': databaseComment,
+			'commentVersion': commentVersion || 0,
+			'authors': authors || [],
+			'previousPieces': previousPieces || []
+		};
+	},
+
+	/**
+	 * Escape inputed text
+	 * @param {String} string - text
+	 */
+	escapeInputText: function (string) {
+		if(typeof string !== 'string') {
+			return string;
+		}
+		return string.replace(/[&'`"<>]/g, function(match) {
+			return {
+				'&': '&amp;',
+				"'": '&#x27;',
+				'`': '&#x60;',
+				'"': '&quot;',
+				'<': '&lt;',
+				'>': '&gt;',
+			}[match]
+		});
+	},
+
+	/**
+	 * Escape newline character of text
+	 * @param {String} string - text
+	 */
+	escapeNewlineCharacter: function (string) {
+		return string.split('<br>').join('\n');
+	},
+
+	/**
+	 * Unescape whitespace character of text
+	 * @param {String} string - text
+	 */
+	unescapeWhitespace: function (string) {
+		return string.split('&nbsp;').join(' ');
+	},
+
+	/**
+	 * Delete unnecessary whitespace
+	 * @param {String} string - text
+	 */
+	deleteUnnecessaryWhitespace: function(string) {
+		var commentArray = string.split("\n");
+		var result = "";
+		for(var i = 0; i < commentArray.length; i++) {
+			result += commentArray[i].replace(/\s+$/g,'');
+			if (!(i == commentArray.length - 1)) {
+				result += '\n';
+			}
+		}
+		return result.trim();
+	},
+
+	/**
+	 * Request decomment
+	 * @param {string} schemeName - Scheme name
+	 * @param {Object} params - Request parameters
+	 */
+	requestSaveDecomment: function (schemeName, params) {
+		var http = new XMLHttpRequest();
+		http.withCredentials = true;
+		var url = this.getHostName() + '/api/document/decomment/' + schemeName + '/save';
+		http.open('POST', url, true);
+
+		var that = this;
+		http.onreadystatechange = function () {
+			if (http.readyState === 4) {
+				if (http.status === 200) {
+					// request success
+					that.fetchVirtualPickup(schemeName);
+				} else {
+					// request failed
+					alert('Error!! cannot save new column comment.');
+				}
+			}
+		};
+		http.send(JSON.stringify(params, null, "  "));
+	},
+
+	/**
+	 * Get comment map from store.
+	 * @param {string} tableName - Table name
+	 * @param {string} columnName - column name
+	 * @returns {Object} commentMap - Comment object of table or column
+	 */
+	getCommentMapFromStore: function(tableName, columnName) {
+		return columnName ? this.getColumnMapInfoFromStore(tableName, columnName) : this.getTableMapInfoFromStore(tableName);
+	},
+
+	/**
+	 * Get table object from pickup store.
+	 * @param {string} tableName - Table name
+	 * @return {Object} Column object
+	 */
+	getTableMapInfoFromStore: function (tableName) {
+		var tableMap = this.pickupStore[tableName];
+		if (tableMap === undefined) {
+			return null;
+		}
+		return tableMap;
+	},
+
+	/**
+	 * Get column object from pickup store.
+	 * @param {string} tableName - Table name
+	 * @param {string} columnName - Column name
+	 * @return {Object} Column object
+	 */
+	getColumnMapInfoFromStore: function (tableName, columnName) {
+		var tableMap = this.pickupStore[tableName];
+		if (tableMap === undefined) {
+			return null;
+		}
+		var columns = tableMap['columns'];
+		if (columns === undefined) {
+			return null;
+		}
+		var columnMap = columns[columnName];
+		if (columnMap === undefined) {
+			return null;
+		}
+		return columnMap;
+	}
+};
+
+new Decomment().init();
 </script>
 </body>
 </html>
