@@ -360,7 +360,7 @@ dl.procedurelist dd.column pre {
 	<tr>
 		<td class="rownumcell">1</td>
 		<td class="aliascell"></td>
-		<td class="namecell"><a href="#department" title="type=TABLE, primaryKey={ID}, nameLength=10, columnCount=3">DEPARTMENT</a></td>
+		<td class="namecell" data-name="DEPARTMENT"><a href="#department" title="type=TABLE, primaryKey={ID}, nameLength=10, columnCount=3">DEPARTMENT</a></td>
 		<td class="typecell">TABLE</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
@@ -370,7 +370,7 @@ dl.procedurelist dd.column pre {
 	<tr>
 		<td class="rownumcell">2</td>
 		<td class="aliascell"></td>
-		<td class="namecell"><a href="#employee" title="type=TABLE, primaryKey={ID}, nameLength=8, columnCount=10">EMPLOYEE</a></td>
+		<td class="namecell" data-name="EMPLOYEE"><a href="#employee" title="type=TABLE, primaryKey={ID}, nameLength=8, columnCount=10">EMPLOYEE</a></td>
 		<td class="typecell">TABLE</td>
 		<td class="relcell">&nbsp;</td>
 		<td class="relcell">&nbsp;</td>
@@ -679,7 +679,7 @@ EMPLOYEE
 	Created by <a href="http://dbflute.org/">DBFlute(AutoGenerator)</a>
 </p>
 
-<!-- Only used by dbflute intro http://dbflute.seasar.org/ja/manual/function/helper/intro/index.html -->
+<!-- Only used by dbflute intro http://dbflute.seasar.org/ja/manual/function/generator/intro/index.html -->
 <div id="decomment-modal" class="decommentmodal">
 	<div class="decommentmodalcontent">
 		<div id="decomment-close" class="decommentmodal-close-btn"><span>x</span></div>
@@ -1172,7 +1172,7 @@ Decomment.prototype = {
 		that = this;
 		Array.prototype.forEach.call(decomment["tables"], function (table) {
 			var tableElements = that.extractTableElements(table);
-			if (that.storePickupTableProperties(table)) {
+			if (tableElements && that.storePickupTableProperties(table)) {
 				var newTableComment = that.buildDisplayTableCommentFromServer(table);
 				var authors = that.getTableMapInfoFromStore(that.getTableNameFromJson(table))['authors'];
 				that.storePreviousWholeTableComment(table, newTableComment, authors);
@@ -1181,12 +1181,14 @@ Decomment.prototype = {
 			}
 			Array.prototype.forEach.call(table["columns"], function (column) {
 				var columnElement = that.extractColumnElement(table, column);
-				that.storePickupColumnProperties(table, column);
-				var newComment = that.buildDisplayColumnCommentFromServer(table, column);
-				var authors = that.buildColumnCommentAuthoers(table, column);
-				that.storePreviousWholeColumnComment(table, column, newComment);
-				that.updateDisplayColumnCommentToHtml(columnElement, newComment, authors);
-				that.reflectCommentConflictIfNeed(table, column, columnElement);
+				if (columnElement) {
+					that.storePickupColumnProperties(table, column);
+					var newComment = that.buildDisplayColumnCommentFromServer(table, column);
+					var authors = that.buildColumnCommentAuthoers(table, column);
+					that.storePreviousWholeColumnComment(table, column, newComment);
+					that.updateDisplayColumnCommentToHtml(columnElement, newComment, authors);
+					that.reflectCommentConflictIfNeed(table, column, columnElement);
+				}
 			});
 		});
 	},
@@ -1212,7 +1214,7 @@ Decomment.prototype = {
 		var columnId = (table["tableName"] + "_" + column["columnName"]);
 		columnId = columnId.toLowerCase();
 		var columnElement = document.getElementById(columnId);
-		return columnElement.parentElement
+		return columnElement == null ? null : columnElement.parentElement
 	},
 
 	/**
@@ -1510,7 +1512,7 @@ Decomment.prototype = {
 		var that = this;
 		var tableList = document.getElementById('table-list-body').querySelectorAll('tr');
 		Array.prototype.forEach.call(tableList, function (table) {
-			var tableName = table.querySelector('.namecell').querySelector('a').innerText;
+			var tableName = table.querySelector('.namecell').getAttribute('data-name');
 			var commentElement = table.querySelector('.commentcell');
 			that.setupSaveTableClickEvent(tableName, commentElement);
 		});
