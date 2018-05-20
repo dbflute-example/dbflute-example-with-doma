@@ -25,17 +25,17 @@
             name="JOB_TYPE" size="20" type="VARCHAR"/>
         <column comment="" dbType="TIMESTAMP"
             javaType="java.time.LocalDateTime" name="HIREDATE"
-            size="23, 10" type="TIMESTAMP"/>
+            size="26, 6" type="TIMESTAMP"/>
         <column comment="" dbType="INTEGER" javaType="Integer"
             name="DEPARTMENT_ID" size="10" type="INTEGER"/>
         <column comment="" dbType="INTEGER" javaType="Integer"
             name="VERSION" required="true" size="10" type="INTEGER"/>
         <column comment="" dbType="TIMESTAMP"
             javaType="java.time.LocalDateTime" name="INSERTTIMESTAMP"
-            size="23, 10" type="TIMESTAMP"/>
+            size="26, 6" type="TIMESTAMP"/>
         <column comment="" dbType="TIMESTAMP"
             javaType="java.time.LocalDateTime" name="UPDATETIMESTAMP"
-            size="23, 10" type="TIMESTAMP"/>
+            size="26, 6" type="TIMESTAMP"/>
     </table>
     <sequenceGroup>
         <sequence incrementSize="1" name="EMPLOYEE_SEQ" schema="DOMADB.PUBLIC"/>

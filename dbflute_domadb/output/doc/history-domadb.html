@@ -1,30 +1,8 @@
-##
-## Copyright 2014-2018 the original author or authors.
-##
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-##
-##     http://www.apache.org/licenses/LICENSE-2.0
-##
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
-## either express or implied. See the License for the specific language
-## governing permissions and limitations under the License.
-##
 <!DOCTYPE html>
 <html lang="en"> <!-- main language (to avoid HTML validator) -->
 <head>
 	<meta charset="UTF-8" />
-	<title>${database.projectName} ${selector.diffModelSmallTitle}</title>
-#if ($selector.isHistoryHtmlStyleSheetEmbedded())
-	<style type="text/css">
-${selector.historyHtmlStyleSheetEmbedded}
-	</style>
-#elseif ($selector.isHistoryHtmlStyleSheetLink())
-	${selector.historyHtmlStyleSheetLink}
-#else
+	<title>domadb history</title>
 	<style type="text/css">
 /* -------------------------------------------------
                                              Core
@@ -227,213 +205,38 @@ dl.column-content dd span {
 	background-color: #eed;
 }
 	</style>
-#end
-#if ($selector.isHistoryHtmlJavaScriptEmbedded())
-	<script type="text/javascript">
-${selector.historyHtmlJavaScriptEmbedded}
-	</script>
-#elseif ($selector.isHistoryHtmlJavaScriptLink())
-	${selector.historyHtmlJavaScriptLink}
-#end
 </head>
 
 <body>
-<h1>${selector.diffModelBigTitle} for ${database.projectName} (${database.databaseName})</h1>
+<h1>History for domadb (h2)</h1>
 <div class="navilinkarea">
-#if ($selector.isHistoryHtmlToSchemaHtmlLink())
-<p class="sisterlink"><a href="./${selector.schemaHtmlFileName}">to SchemaHTML</a></p>
-#end
-#if ($selector.isHistoryHtmlToPropertiesHtmlLink())
-<p class="sistersublink"><a href="./${selector.propertiesHtmlFileName}">to PropertiesHTML</a></p>
-#end
+<p class="sisterlink"><a href="./schema-domadb.html">to SchemaHTML</a></p>
 </div>
 
-#set ($diffCount = $selector.schemaDiffList.size())
-#foreach ($schemaDiff in $selector.schemaDiffList)
-#set ($diffNo = $diffCount - $velocityCount + 1)
-<div class="section diffCode_${schemaDiff.diffDateAsCode}">
+<div class="section diffCode_20180519230236">
 	<h2>
-		<span class="titlediffno">diffNo. ${diffNo}:</span> <span class="titlediffdatepart">${schemaDiff.diffDateAsDatePart}</span> <span class="titledifftimepart">${schemaDiff.diffDateAsTimePart}</span>
-#if ($selector.isHistoryHtmlShowDiffAuthor() && $schemaDiff.hasDiffAuthor())
-		<span class="titlediffauthor">by ${schemaDiff.diffAuthorHtmlExp}</span>
-#end
-#if ($selector.isHistoryHtmlShowDiffGitBranch() && $schemaDiff.hasDiffGitBranch())
-		<span class="titlediffgitbranch">on ${schemaDiff.diffGitBranchHtmlExp}</span>
-#end
+		<span class="titlediffno">diffNo. 1:</span> <span class="titlediffdatepart">2018/05/19</span> <span class="titledifftimepart">23:02:36</span>
+		<span class="titlediffauthor">by jflute</span>
+		<span class="titlediffgitbranch">on master</span>
 	</h2>
-#if ($schemaDiff.hasComment())
-	<pre class="diffcomment">${schemaDiff.comment}</pre>
-#else
-## add empty comment element to reflect hacomment
 	<pre class="diffcomment"></pre>
-#end
-#if ($schemaDiff.tableCount.hasDiff())
-	<p class="tablecount">table count: ${schemaDiff.tableCount.displayForHtml}</p>
-#end
 
-## =======================================================================================
-##                                                                               TableDiff
-##                                                                               =========
-#if (!$schemaDiff.addedTableDiffList.isEmpty())
-	<h3>Add Table</h3>
-	<ul class="table-content">
-#foreach ($tableDiff in $schemaDiff.addedTableDiffList)
-#if ($selector.isCurrentHistoryHtml() && $schemaDiff.isLatest())
-		<li><a href="./${selector.schemaHtmlFileName}#${tableDiff.lowerTableName}">${tableDiff.tableDispName}</a></li>
-#else
-		<li>${tableDiff.tableDispName}</li>
-#end
-#end
-	</ul>
-#end
-#if (!$schemaDiff.changedTableDiffList.isEmpty())
 	<h3>Change Table</h3>
 	<div class="table-content">
-#foreach ($tableDiff in $schemaDiff.changedTableDiffList)
-#if ($selector.isCurrentHistoryHtml() && $schemaDiff.isLatest())
-		<h4><a href="./${selector.schemaHtmlFileName}#${tableDiff.lowerTableName}">${tableDiff.tableDispName}</a></h4>
-#else
-		<h4>${tableDiff.tableDispName}</h4>
-#end
+		<h4><a href="./schema-domadb.html#employee">EMPLOYEE</a></h4>
 		<div class="change-table-content">
-#foreach ($handler in $tableDiff.nextPreviousDiffList)
-			<h5>$handler.titleName()</h5>
-			<div class="column-content">$handler.provide().displayForHtml</div>
-#end
-#foreach ($content in $tableDiff.nestDiffContentOrderedList)
-			<h5>${content.titleName}</h5>
-#if ($content.isChange())
+			<h5>Change Column</h5>
 			<dl class="column-content">
-#foreach ($nestDiff in $content.nestDiffList)
-				<dt>${nestDiff.keyName}</dt>
-#foreach ($handler in $nestDiff.nextPreviousDiffList)
-				<dd><span>$handler.titleName()</span>$handler.provide().displayForHtml</dd>
-#end
-#end
+				<dt>HIREDATE</dt>
+				<dd><span>Size</span>23,&nbsp;10&nbsp;-&gt;&nbsp;26,&nbsp;6</dd>
+				<dt>INSERTTIMESTAMP</dt>
+				<dd><span>Size</span>23,&nbsp;10&nbsp;-&gt;&nbsp;26,&nbsp;6</dd>
+				<dt>UPDATETIMESTAMP</dt>
+				<dd><span>Size</span>23,&nbsp;10&nbsp;-&gt;&nbsp;26,&nbsp;6</dd>
 			</dl>
-#else
-			<ul class="column-content">
-#foreach ($nestDiff in $content.nestDiffList)
-				<li>${nestDiff.keyName}</li>
-#end
-			</ul>
-#end
-#end
 		</div>
-#end
 	</div>
-#end
-#if (!$schemaDiff.deletedTableDiffList.isEmpty())
-	<h3>Delete Table</h3>
-	<ul class="table-content">
-#foreach ($tableDiff in $schemaDiff.deletedTableDiffList)
-		<li>${tableDiff.tableDispName}</li>
-#end
-	</ul>
-#end
-## =======================================================================================
-##                                                                            SequenceDiff
-##                                                                            ============
-#if (!$schemaDiff.addedSequenceDiffList.isEmpty())
-	<h3>Add Sequence</h3>
-	<ul class="table-content">
-#foreach ($sequenceDiff in $schemaDiff.addedSequenceDiffList)
-		<li>${sequenceDiff.sequenceDispName}</li>
-#end
-	</ul>
-#end
-#if (!$schemaDiff.changedSequenceDiffList.isEmpty())
-	<h3>Change Sequence</h3>
-	<div class="table-content">
-#foreach ($sequenceDiff in $schemaDiff.changedSequenceDiffList)
-		<h4>${sequenceDiff.sequenceDispName}</h4>
-		<div class="change-table-content">
-#foreach ($handler in $sequenceDiff.nextPreviousDiffList)
-			<h5>$handler.titleName()</h5>
-			<div class="column-content">$handler.provide().displayForHtml</div>
-#end
-		</div>
-#end
-	</div>
-#end
-#if (!$schemaDiff.deletedSequenceDiffList.isEmpty())
-	<h3>Delete Sequence</h3>
-	<ul class="table-content">
-#foreach ($sequenceDiff in $schemaDiff.deletedSequenceDiffList)
-		<li>${sequenceDiff.sequenceDispName}</li>
-#end
-	</ul>
-#end
-## =======================================================================================
-##                                                                           ProcedureDiff
-##                                                                           =============
-#if (!$schemaDiff.addedProcedureDiffList.isEmpty())
-	<h3>Add Procedure</h3>
-	<ul class="table-content">
-#foreach ($procedureDiff in $schemaDiff.addedProcedureDiffList)
-		<li>${procedureDiff.procedureDispName}</li>
-#end
-	</ul>
-#end
-#if (!$schemaDiff.changedProcedureDiffList.isEmpty())
-	<h3>Change Procedure</h3>
-	<div class="table-content">
-#foreach ($procedureDiff in $schemaDiff.changedProcedureDiffList)
-		<h4>${procedureDiff.procedureDispName}</h4>
-		<div class="change-table-content">
-#foreach ($handler in $procedureDiff.nextPreviousDiffList)
-			<h5>$handler.titleName()</h5>
-			<div class="column-content">$handler.provide().displayForHtml</div>
-#end
-		</div>
-#end
-	</div>
-#end
-#if (!$schemaDiff.deletedProcedureDiffList.isEmpty())
-	<h3>Delete Procedure</h3>
-	<ul class="table-content">
-#foreach ($procedureDiff in $schemaDiff.deletedProcedureDiffList)
-		<li>${procedureDiff.procedureDispName}</li>
-#end
-	</ul>
-#end
-## =======================================================================================
-##                                                                               CraftDiff
-##                                                                               =========
-#foreach ($titleDiff in $schemaDiff.craftTitleDiffList)
-#if (!$titleDiff.addedCraftRowDiffList.isEmpty())
-	<h3>Add ${titleDiff.craftDispTitle}</h3>
-	<ul class="table-content">
-#foreach ($rowDiff in $titleDiff.addedCraftRowDiffList)
-		<li>${rowDiff.craftKeyDispName}</li>
-#end
-	</ul>
-#end
-#if (!$titleDiff.changedCraftRowDiffList.isEmpty())
-	<h3>Change ${titleDiff.craftDispTitle}</h3>
-	<div class="table-content">
-#foreach ($rowDiff in $titleDiff.changedCraftRowDiffList)
-		<h4>${rowDiff.craftKeyDispName}</h4>
-		<div class="change-table-content">
-#foreach ($handler in $rowDiff.nextPreviousDiffList)
-			<h5>$handler.titleName()</h5>
-			<div class="column-content">$handler.provide().displayForHtml</div>
-#end
-		</div>
-#end
-	</div>
-#end
-#if (!$titleDiff.deletedCraftRowDiffList.isEmpty())
-	<h3>Delete ${titleDiff.craftDispTitle}</h3>
-	<ul class="table-content">
-#foreach ($rowDiff in $titleDiff.deletedCraftRowDiffList)
-		<li>${rowDiff.craftKeyDispName}</li>
-#end
-	</ul>
-#end
-#end
 </div>
-#end
 
 <h2>Thanks</h2>
 <p>
@@ -449,8 +252,7 @@ ${selector.historyHtmlJavaScriptEmbedded}
     </div>
 </div>
 </body>
-	#macro(escape $str)$!str.replaceAll("'", "\\'").replaceAll("\n", "<br>")#end
-<script>
+	<script>
     /**
      * @author hakiba
      */
@@ -531,7 +333,7 @@ ${selector.historyHtmlJavaScriptEmbedded}
                  * @returns {string} Scheme name
                  */
                 this.getSchemaName = function () {
-                    return "${database.projectName}";
+                    return "domadb";
                 },
                 /**
                  * Escape inputed text
@@ -587,32 +389,13 @@ ${selector.historyHtmlJavaScriptEmbedded}
     function Hacomment() {
         this.embeddedPickup = {
             'diffList' : [
-#foreach($diff in $selector.hacoMapDiffList)
-                #if ($velocityCount > 1), #end{
-                    'diffCode' : '${diff.diffCode}',
-                    'diffDate' : '${diff.diffDate}',
-                    'properties' : [
-#foreach($property in $diff.propertyList)
-                        #if ($velocityCount > 1), #end{
-                            'hacomment' : '#escape($!{property.hacomment})',
-                            'authorList' : [#foreach($author in $property.authorList)#if ($velocityCount > 1),#end'#escape($!{author})'#end],
-                            'pieceCode' : '$!{property.pieceCode}',
-                            'pieceDatetime' : '$!{property.pieceDatetime}',
-                            'previousPieces' : [#foreach($pieceCode in $property.previousPieceList)#if ($velocityCount > 1),#end'$!{pieceCode}'#end]
-                        }
-#end
-                    ]
-                }
-#end
             ]
         };
         this.pickupStore = {
-#foreach($schemaDiff in $selector.schemaDiffList)
-            #if ($velocityCount > 1), #end'${schemaDiff.diffDateAsCode}' : {
-                'diffDate' : '${schemaDiff.diffDate}',
-                'diffComment' : '#escape($!{schemaDiff.comment})'
+            '20180519230236' : {
+                'diffDate' : '2018/05/19 23:02:36',
+                'diffComment' : ''
             }
-#end
         }
     }
     Hacomment.prototype = {

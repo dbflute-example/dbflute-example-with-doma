@@ -1,0 +1,39 @@
+map:{
+    ; 2018/05/19 23:02:36 = map:{
+        ; diffDate = 2018/05/19 23:02:36
+        ; diffAuthor = jflute
+        ; diffGitBranch = master
+        ; tableDiff = map:{
+            ; EMPLOYEE = map:{
+                ; tableName = EMPLOYEE
+                ; diffType = CHANGE
+                ; columnDiff = map:{
+                    ; HIREDATE = map:{
+                        ; columnName = HIREDATE
+                        ; diffType = CHANGE
+                        ; columnSizeDiff = map:{
+                            ; next = 26, 6
+                            ; previous = 23, 10
+                        }
+                    }
+                    ; INSERTTIMESTAMP = map:{
+                        ; columnName = INSERTTIMESTAMP
+                        ; diffType = CHANGE
+                        ; columnSizeDiff = map:{
+                            ; next = 26, 6
+                            ; previous = 23, 10
+                        }
+                    }
+                    ; UPDATETIMESTAMP = map:{
+                        ; columnName = UPDATETIMESTAMP
+                        ; diffType = CHANGE
+                        ; columnSizeDiff = map:{
+                            ; next = 26, 6
+                            ; previous = 23, 10
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
