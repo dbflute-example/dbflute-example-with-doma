@@ -3,3 +3,4 @@
 /dbflute-intro.jar
 /.idea
 /*.iml
+/.apt_generated_tests/
