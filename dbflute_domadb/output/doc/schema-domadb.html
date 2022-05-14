@@ -334,6 +334,19 @@ dl.procedurelist dd.column pre {
 }
 
 /* -------------------------------------------------
+                                    Schema Policy
+------------------------------------------------- */
+pre.spolicydisp {
+	padding-top: 0.5em;
+	padding-left: 0.5em;
+}
+pre.spolicyviodisp {
+	padding-top: 0.5em;
+	padding-left: 0.5em;
+	color: #994747;
+}
+
+/* -------------------------------------------------
                                   Decomment Modal
 ------------------------------------------------- */
 .decommentmodal {
@@ -1467,6 +1480,7 @@ StoreClient.prototype = {
 			}
 			var decomment = {
 				"body": property["decomment"],
+				"pieceOwner": property["pieceOwner"],
 				"pieceGitBranch": property["pieceGitBranch"]
 			}
 			decomments.push(decomment);
@@ -1530,6 +1544,7 @@ StoreClient.prototype = {
 			}
 			var decomment = {
 				"body": property["decomment"],
+				"pieceOwner": property["pieceOwner"],
 				"pieceGitBranch": property["pieceGitBranch"]
 			}
 			decomments.push(decomment);
@@ -1596,6 +1611,7 @@ function PickupTableProperty(tableDbName, json) {
 		this.decomments = json.decomments || [];
 		this.previousPieces = json.previousPieces;
 		this.authors = json.authors;
+		this.pieceOwner = json.pieceOwner;
 		this.commentVersion = json.commentVersion;
 		this.columns = {};
 		var columns = json.columns || {};
@@ -1656,7 +1672,7 @@ PickupTableProperty.prototype = {
 			var decomment = this.decomments[key];
 			displayComment += decomment.body
 			if (this.isConflict() && decomment.pieceGitBranch) {
-				displayComment += '\n=======' + decomment.pieceGitBranch;
+				displayComment += '\n=======' + decomment.pieceGitBranch + ' (' + decomment.pieceOwner + ')';
 				if (key < commentCount - 1) {
 					displayComment += '\n\n'; // show between comments
 				}
@@ -1745,6 +1761,7 @@ function PickupColumnProperty(tableDbName, columnName, json) {
 		this.decomments = json['decomments'] || [];
 		this.previousPieces = json['previousPieces'];
 		this.authors = json['authors'];
+		this.pieceOwner = json['pieceOwner'];
 		this.commentVersion = json['commentVersion'];
 		this.previousWholeComment = json['previousWholeComment'];
 	}
@@ -1803,7 +1820,7 @@ PickupColumnProperty.prototype = {
 			var decomment = this.decomments[key];
 			displayComment += decomment.body
 			if (this.isConflict() && decomment.pieceGitBranch) {
-				displayComment += '\n=======' + decomment.pieceGitBranch;
+				displayComment += '\n=======' + decomment.pieceGitBranch + ' (' + decomment.pieceOwner + ')';
 				if (key < commentCount - 1) {
 					displayComment += '\n\n'; // show between comments
 				}

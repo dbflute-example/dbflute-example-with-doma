@@ -38,7 +38,7 @@ public class AppConfig implements Config {
 
     private AppConfig() {
         dialect = new H2Dialect();
-        dataSource = new LocalTransactionDataSource("jdbc:h2:file:./etc/database/domadb", "sa", null);
+        dataSource = new LocalTransactionDataSource("jdbc:h2:file:./etc/testdb/domadb", "sa", null);
         transactionManager = new LocalTransactionManager(dataSource.getLocalTransaction(getJdbcLogger()));
     }
 
